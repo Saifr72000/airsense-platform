@@ -1,0 +1,142 @@
+[
+  {
+    "id": "airsense_flow",
+    "type": "tab",
+    "label": "AirSense Integration",
+    "disabled": false,
+    "info": "Example flow for integrating sensors with AirSense platform"
+  },
+  {
+    "id": "inject_sensor_1",
+    "type": "inject",
+    "z": "airsense_flow",
+    "name": "Simulate Sensor 1",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "60",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "{\"sensor_id\":\"sensor_001\",\"temperature\":22.5,\"humidity\":45,\"co2\":650}",
+    "payloadType": "json",
+    "x": 140,
+    "y": 100,
+    "wires": [["http_post"]]
+  },
+  {
+    "id": "inject_sensor_2",
+    "type": "inject",
+    "z": "airsense_flow",
+    "name": "Simulate Sensor 2",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "60",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "{\"sensor_id\":\"sensor_002\",\"temperature\":24.2,\"humidity\":52,\"co2\":850}",
+    "payloadType": "json",
+    "x": 140,
+    "y": 160,
+    "wires": [["http_post"]]
+  },
+  {
+    "id": "inject_sensor_3_poor",
+    "type": "inject",
+    "z": "airsense_flow",
+    "name": "Simulate Poor Air Quality",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "{\"sensor_id\":\"sensor_003\",\"temperature\":28.5,\"humidity\":75,\"co2\":1500}",
+    "payloadType": "json",
+    "x": 160,
+    "y": 220,
+    "wires": [["http_post"]]
+  },
+  {
+    "id": "http_post",
+    "type": "http request",
+    "z": "airsense_flow",
+    "name": "POST to AirSense",
+    "method": "POST",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "http://localhost:3000/api/sensor-data",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "authType": "",
+    "sendsPayload": true,
+    "x": 390,
+    "y": 140,
+    "wires": [["check_response"]]
+  },
+  {
+    "id": "check_response",
+    "type": "function",
+    "z": "airsense_flow",
+    "name": "Check Response",
+    "func": "if (msg.statusCode === 200) {\n    msg.payload = {\n        success: true,\n        sensor: msg.payload.reading.sensor_id,\n        score: msg.payload.air_quality.score,\n        level: msg.payload.air_quality.level\n    };\n    node.status({fill:\"green\",shape:\"dot\",text:\"Success: \" + msg.payload.level});\n} else {\n    msg.payload = {\n        error: true,\n        message: msg.payload.error || \"Unknown error\"\n    };\n    node.status({fill:\"red\",shape:\"ring\",text:\"Error\"});\n}\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 610,
+    "y": 140,
+    "wires": [["debug_output"]]
+  },
+  {
+    "id": "debug_output",
+    "type": "debug",
+    "z": "airsense_flow",
+    "name": "Response",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 800,
+    "y": 140,
+    "wires": []
+  },
+  {
+    "id": "comment_1",
+    "type": "comment",
+    "z": "airsense_flow",
+    "name": "AirSense Platform Integration Example",
+    "info": "This flow demonstrates how to send sensor data to the AirSense platform.\n\n1. Click the inject nodes to simulate sensor readings\n2. Data is sent to the AirSense API\n3. Response includes air quality score and recommendations\n4. Check the debug panel for results\n\nConfiguration:\n- Update the URL in the HTTP request node with your actual endpoint\n- Modify sensor_id values to match your rooms\n- Adjust temperature, humidity, and CO2 values as needed",
+    "x": 180,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "mqtt_example",
+    "type": "comment",
+    "z": "airsense_flow",
+    "name": "For real sensors, replace inject nodes with MQTT/Serial input",
+    "info": "Replace the inject nodes above with:\n- MQTT in nodes for network sensors\n- Serial in nodes for USB/RS485 sensors\n- HTTP in nodes for webhook-based sensors\n\nThen add a function node to format the data to match the required payload structure.",
+    "x": 250,
+    "y": 280,
+    "wires": []
+  }
+]
