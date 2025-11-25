@@ -157,7 +157,12 @@ export default function HomePage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F8F8F8" }}>
       {/* Header */}
-      <header className="bg-white">
+      <header
+        className="bg-white"
+        style={{
+          borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+        }}
+      >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center">
             <Logo />
@@ -197,7 +202,14 @@ export default function HomePage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div
+            className="bg-white rounded-2xl p-6 shadow-sm"
+            style={{
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderColor: "rgba(0, 0, 0, 0.12)",
+            }}
+          >
             <div className="text-sm text-gray-700 mb-2">Total Rooms</div>
             <div className="text-4xl font-bold text-black">
               {allRooms.length}
@@ -205,7 +217,12 @@ export default function HomePage() {
           </div>
           <div
             className="rounded-2xl p-6 shadow-sm"
-            style={{ backgroundColor: "#BCF4A8" }}
+            style={{
+              backgroundColor: "#BCF4A8",
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderColor: "rgba(0, 0, 0, 0.12)",
+            }}
           >
             <div className="text-sm mb-2 flex items-center text-black">
               Good Quality{" "}
@@ -219,7 +236,12 @@ export default function HomePage() {
           </div>
           <div
             className="rounded-2xl p-6 shadow-sm"
-            style={{ backgroundColor: "#FFAF76" }}
+            style={{
+              backgroundColor: "#FFAF76",
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderColor: "rgba(0, 0, 0, 0.12)",
+            }}
           >
             <div className="text-sm mb-2 flex items-center text-black">
               Moderate Quality{" "}
@@ -233,7 +255,12 @@ export default function HomePage() {
           </div>
           <div
             className="rounded-2xl p-6 shadow-sm"
-            style={{ backgroundColor: "#F25E5E" }}
+            style={{
+              backgroundColor: "#F25E5E",
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderColor: "rgba(0, 0, 0, 0.12)",
+            }}
           >
             <div className="text-sm mb-2 flex items-center text-black">
               Poor Quality{" "}
@@ -322,6 +349,11 @@ export default function HomePage() {
                       <div
                         key={room.id}
                         className="bg-white rounded-2xl p-6 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                        style={{
+                          borderWidth: "1px",
+                          borderStyle: "solid",
+                          borderColor: "rgba(0, 0, 0, 0.12)",
+                        }}
                         onClick={() => openRoomModal(room)}
                       >
                         {/* Building Name - Always visible */}
@@ -408,7 +440,14 @@ export default function HomePage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Air Quality Levels Legend */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
+            <div
+              className="bg-white rounded-2xl p-6 shadow-sm"
+              style={{
+                borderWidth: "1px",
+                borderStyle: "solid",
+                borderColor: "rgba(0, 0, 0, 0.12)",
+              }}
+            >
               <h3 className="font-bold text-lg mb-4 text-black">CO2 Levels</h3>
               <div className="space-y-3">
                 <div className="flex items-center">
@@ -448,7 +487,14 @@ export default function HomePage() {
             </div>
 
             {/* Tips */}
-            <div className="bg-blue-50 rounded-2xl p-6 shadow-sm">
+            <div
+              className="bg-blue-50 rounded-2xl p-6 shadow-sm"
+              style={{
+                borderWidth: "1px",
+                borderStyle: "solid",
+                borderColor: "rgba(0, 0, 0, 0.12)",
+              }}
+            >
               <h3 className="font-bold text-lg mb-4 text-black">Tip</h3>
               <ul className="space-y-2 text-sm text-gray-700">
                 <li>
@@ -470,6 +516,11 @@ export default function HomePage() {
         >
           <div
             className="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            style={{
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderColor: "rgba(0, 0, 0, 0.12)",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
