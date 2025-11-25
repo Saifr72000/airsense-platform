@@ -17,10 +17,12 @@ export function QualityIcon({ level, variant = "outline" }: QualityIconProps) {
   };
 
   const icon = iconMap[level];
+  // Add cache busting parameter
+  const iconWithCache = `${icon}?v=2`;
 
   return (
     <Image
-      src={icon}
+      src={iconWithCache}
       alt={`${level} air quality`}
       width={24}
       height={24}

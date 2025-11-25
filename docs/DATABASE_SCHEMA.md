@@ -4,6 +4,62 @@ AirSense uses PostgreSQL via Supabase with Row Level Security (RLS) enabled.
 
 ## Tables
 
+### `buildings`
+
+Stores building information for campus locations.
+
+```sql
+CREATE TABLE buildings (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  code TEXT NOT NULL UNIQUE,
+  address TEXT,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+**Indexes:**
+
+```sql
+CREATE INDEX idx_buildings_user_id ON buildings(user_id);
+CREATE INDEX idx_buildings_code ON buildings(code);
+```
+
+**Columns:**
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| id | UUID | PRIMARY KEY | Unique identifier |
+| name | TEXT | NOT NULL | Building name (e.g., "Smaragd Building") |
+| code | TEXT | NOT NULL, UNIQUE | Building code (e.g., "SMR") |
+| address | TEXT | NULL | Physical address |
+| user_id | UUID | FOREIGN KEY → auth.users | Building creator |
+| created_at | TIMESTAMPTZ | DEFAULT NOW() | Creation timestamp |
+| updated_at | TIMESTAMPTZ | DEFAULT NOW() | Last update timestamp |
+
+**RLS Policies:**
+
+```sql
+-- Everyone can view buildings
+CREATE POLICY "Buildings are viewable by everyone" ON buildings
+  FOR SELECT USING (true);
+
+-- Users can insert their own buildings
+CREATE POLICY "Users can insert their own buildings" ON buildings
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- Users can update their own buildings
+CREATE POLICY "Users can update their own buildings" ON buildings
+  FOR UPDATE USING (auth.uid() = user_id);
+
+-- Users can delete their own buildings
+CREATE POLICY "Users can delete their own buildings" ON buildings
+  FOR DELETE USING (auth.uid() = user_id);
+```
+
+---
+
 ### `rooms`
 
 Stores room information and sensor assignments.
@@ -13,6 +69,7 @@ CREATE TABLE rooms (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
   room_code TEXT NOT NULL UNIQUE,
+  building_id UUID REFERENCES buildings(id) ON DELETE CASCADE NOT NULL,
   sensor_id TEXT,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -25,6 +82,7 @@ CREATE TABLE rooms (
 ```sql
 CREATE INDEX idx_rooms_user_id ON rooms(user_id);
 CREATE INDEX idx_rooms_sensor_id ON rooms(sensor_id);
+CREATE INDEX idx_rooms_building_id ON rooms(building_id);
 ```
 
 **Columns:**
@@ -33,6 +91,7 @@ CREATE INDEX idx_rooms_sensor_id ON rooms(sensor_id);
 | id | UUID | PRIMARY KEY | Unique identifier |
 | name | TEXT | NOT NULL | Display name (e.g., "Group Room 1") |
 | room_code | TEXT | NOT NULL, UNIQUE | Room code (e.g., "S307") |
+| building_id | UUID | FOREIGN KEY → buildings, NOT NULL | Parent building |
 | sensor_id | TEXT | NULL | Associated sensor device ID |
 | user_id | UUID | FOREIGN KEY → auth.users | Room owner |
 | created_at | TIMESTAMPTZ | DEFAULT NOW() | Creation timestamp |
@@ -120,19 +179,66 @@ CREATE POLICY "Authenticated users can insert sensor readings" ON sensor_reading
 ```
 auth.users (Supabase Auth)
     ↓ (1:N)
+buildings
+    ↓ (1:N)
 rooms
     ↓ (1:N)
 sensor_readings
 ```
 
-- One user can have many rooms
+- One user can have many buildings
+- One building can have many rooms
 - One room can have many sensor readings
+- Deleting a building cascades to delete all its rooms and their readings
 - Deleting a room cascades to delete all its readings
-- Deleting a user cascades to delete all their rooms and readings
+- Deleting a user cascades to delete all their buildings, rooms, and readings
 
 ---
 
 ## Queries
+
+### Get all buildings with room counts
+
+```sql
+SELECT
+  b.*,
+  COUNT(r.id) as room_count
+FROM buildings b
+LEFT JOIN rooms r ON r.building_id = b.id
+GROUP BY b.id
+ORDER BY b.created_at DESC;
+```
+
+### Get a building with all its rooms and latest readings
+
+```sql
+SELECT
+  b.id as building_id,
+  b.name as building_name,
+  b.code as building_code,
+  b.address,
+  r.*,
+  (
+    SELECT json_build_object(
+      'id', sr.id,
+      'temperature', sr.temperature,
+      'humidity', sr.humidity,
+      'co2', sr.co2,
+      'quality_score', sr.quality_score,
+      'quality_level', sr.quality_level,
+      'recommendations', sr.recommendations,
+      'created_at', sr.created_at
+    )
+    FROM sensor_readings sr
+    WHERE sr.room_id = r.id
+    ORDER BY sr.created_at DESC
+    LIMIT 1
+  ) as latest_reading
+FROM buildings b
+LEFT JOIN rooms r ON r.building_id = b.id
+WHERE b.id = 'building-uuid'
+ORDER BY r.created_at DESC;
+```
 
 ### Get all rooms with latest reading
 
@@ -201,10 +307,14 @@ ORDER BY r.name;
 
 ## Migrations
 
-Migrations were applied using Supabase MCP:
+Migrations were applied using Supabase SQL Editor or MCP:
 
-1. **create_rooms_table** - Creates rooms table with RLS policies
-2. **create_sensor_readings_table** - Creates sensor_readings table with RLS policies
+1. **create_buildings_table** - Creates buildings table with RLS policies
+2. **create_rooms_table** - Creates rooms table with RLS policies
+3. **add_building_id_to_rooms** - Adds building_id foreign key to rooms table
+4. **create_sensor_readings_table** - Creates sensor_readings table with RLS policies
+
+See [MIGRATIONS.md](./MIGRATIONS.md) for detailed migration scripts.
 
 ---
 

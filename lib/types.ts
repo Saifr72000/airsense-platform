@@ -1,7 +1,18 @@
+export interface Building {
+  id: string;
+  name: string;
+  code: string;
+  address: string | null;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Room {
   id: string;
   name: string;
   room_code: string;
+  building_id: string;
   sensor_id: string | null;
   user_id: string;
   created_at: string;
@@ -23,6 +34,10 @@ export interface SensorReading {
 
 export interface RoomWithLatestReading extends Room {
   latest_reading: SensorReading | null;
+}
+
+export interface BuildingWithRooms extends Building {
+  rooms: RoomWithLatestReading[];
 }
 
 export type QualityLevel = "good" | "moderate" | "poor";

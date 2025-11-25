@@ -51,11 +51,11 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, room_code, sensor_id } = body;
+    const { name, room_code, building_id, sensor_id } = body;
 
-    if (!name || !room_code) {
+    if (!name || !room_code || !building_id) {
       return NextResponse.json(
-        { error: "Missing required fields: name, room_code" },
+        { error: "Missing required fields: name, room_code, building_id" },
         { status: 400 }
       );
     }
@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
       .insert({
         name,
         room_code,
+        building_id,
         sensor_id: sensor_id || null,
         user_id: user.id,
       })

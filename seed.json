@@ -1,0 +1,124 @@
+{
+  "buildings": [
+    {
+      "name": "Smaragd Building",
+      "code": "SMARAGD",
+      "address": "Gløshaugen Campus",
+      "rooms": [
+        {
+          "name": "Group Room 1",
+          "room_code": "S307",
+          "sensor_id": "sensor_smr_307",
+          "sensor_data": {
+            "co2": 650,
+            "temperature": 21,
+            "humidity": 45,
+            "quality_level": "good"
+          }
+        },
+        {
+          "name": "Study Hall",
+          "room_code": "S401",
+          "sensor_id": "sensor_smr_401",
+          "sensor_data": {
+            "co2": 950,
+            "temperature": 23,
+            "humidity": 56,
+            "quality_level": "moderate"
+          }
+        },
+        {
+          "name": "Conference Room",
+          "room_code": "S201",
+          "sensor_id": "sensor_smr_201",
+          "sensor_data": {
+            "co2": 1350,
+            "temperature": 25,
+            "humidity": 62,
+            "quality_level": "poor"
+          }
+        }
+      ]
+    },
+    {
+      "name": "K-bygget",
+      "code": "KB",
+      "address": "Gløshaugen Campus",
+      "rooms": [
+        {
+          "name": "Lecture Hall A",
+          "room_code": "K101",
+          "sensor_id": "sensor_kb_101",
+          "sensor_data": {
+            "co2": 720,
+            "temperature": 20,
+            "humidity": 42,
+            "quality_level": "good"
+          }
+        },
+        {
+          "name": "Lab Room",
+          "room_code": "K205",
+          "sensor_id": "sensor_kb_205",
+          "sensor_data": {
+            "co2": 1100,
+            "temperature": 22,
+            "humidity": 48,
+            "quality_level": "moderate"
+          }
+        },
+        {
+          "name": "Workshop",
+          "room_code": "K302",
+          "sensor_id": "sensor_kb_302",
+          "sensor_data": {
+            "co2": 1450,
+            "temperature": 24,
+            "humidity": 65,
+            "quality_level": "poor"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Main Hall",
+      "code": "MH",
+      "address": "City Campus",
+      "rooms": [
+        {
+          "name": "Reading Room",
+          "room_code": "MH102",
+          "sensor_id": "sensor_mh_102",
+          "sensor_data": {
+            "co2": 580,
+            "temperature": 19,
+            "humidity": 40,
+            "quality_level": "good"
+          }
+        },
+        {
+          "name": "Meeting Room B",
+          "room_code": "MH204",
+          "sensor_id": "sensor_mh_204",
+          "sensor_data": {
+            "co2": 880,
+            "temperature": 21,
+            "humidity": 52,
+            "quality_level": "moderate"
+          }
+        },
+        {
+          "name": "Auditorium",
+          "room_code": "MH301",
+          "sensor_id": "sensor_mh_301",
+          "sensor_data": {
+            "co2": 1280,
+            "temperature": 26,
+            "humidity": 58,
+            "quality_level": "poor"
+          }
+        }
+      ]
+    }
+  ]
+}
