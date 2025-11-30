@@ -8,7 +8,7 @@
         {
           "name": "Group Room 1",
           "room_code": "S307",
-          "sensor_id": "sensor_smr_307",
+          "sensor_id": "airsense_device_001",
           "sensor_data": {
             "co2": 650,
             "temperature": 21,

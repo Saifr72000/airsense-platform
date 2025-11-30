@@ -50,10 +50,14 @@ export function calculateAirQuality(
   }
 
   if (co2 > THRESHOLDS.co2.moderate) {
-    recommendations.push("Open windows to reduce CO₂ levels");
-    recommendations.push("Ensure proper ventilation");
+    recommendations.push(
+      `CO₂ is too high (${co2} ppm). Open windows immediately to improve ventilation`
+    );
+    recommendations.push("Consider using mechanical ventilation if available");
   } else if (co2 > THRESHOLDS.co2.good) {
-    recommendations.push("Consider opening a window for fresh air");
+    recommendations.push(
+      `CO₂ is slightly elevated (${co2} ppm). Opening a window would help improve air quality`
+    );
   }
 
   // Temperature Score (weighted 30%)
@@ -63,14 +67,20 @@ export function calculateAirQuality(
       0,
       50 - (THRESHOLDS.temperature.min - temperature) * 10
     );
-    recommendations.push("Increase heating - temperature is too low");
+    recommendations.push(
+      `Temperature is too cold (${temperature.toFixed(
+        1
+      )}°C). Turn on heating for better comfort`
+    );
   } else if (temperature > THRESHOLDS.temperature.max) {
     tempScore = Math.max(
       0,
       50 - (temperature - THRESHOLDS.temperature.max) * 10
     );
     recommendations.push(
-      "Reduce heating or open windows - temperature is too high"
+      `Temperature is too warm (${temperature.toFixed(
+        1
+      )}°C). Open windows or adjust air conditioning`
     );
   } else if (temperature < THRESHOLDS.temperature.optimal_min) {
     tempScore =
@@ -92,11 +102,13 @@ export function calculateAirQuality(
   let humidityScore = 100;
   if (humidity < THRESHOLDS.humidity.min) {
     humidityScore = Math.max(0, 50 - (THRESHOLDS.humidity.min - humidity) * 2);
-    recommendations.push("Use a humidifier - air is too dry");
+    recommendations.push(
+      `Humidity is too low (${humidity}%). Use a humidifier or place water containers in the room`
+    );
   } else if (humidity > THRESHOLDS.humidity.max) {
     humidityScore = Math.max(0, 50 - (humidity - THRESHOLDS.humidity.max) * 2);
     recommendations.push(
-      "Use a dehumidifier or increase ventilation - air is too humid"
+      `Humidity is too high (${humidity}%). Use a dehumidifier or open windows to increase airflow`
     );
   } else if (humidity < THRESHOLDS.humidity.optimal_min) {
     humidityScore =
@@ -122,17 +134,23 @@ export function calculateAirQuality(
   if (score >= 70) {
     level = "good";
     if (recommendations.length === 0) {
-      recommendations.push("Air quality is excellent!");
+      recommendations.push(
+        "Air quality is excellent! This is a great space for focused work or study sessions"
+      );
     }
   } else if (score >= 40) {
     level = "moderate";
     if (recommendations.length === 0) {
-      recommendations.push("Consider improving ventilation");
+      recommendations.push(
+        "Air quality is acceptable but could be improved. Consider taking a short break"
+      );
     }
   } else {
     level = "poor";
     if (recommendations.length === 0) {
-      recommendations.push("Immediate action needed to improve air quality");
+      recommendations.push(
+        "Air quality needs immediate attention. Take action to improve conditions"
+      );
     }
   }
 

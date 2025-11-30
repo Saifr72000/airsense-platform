@@ -43,9 +43,15 @@ export default function LoginPage() {
       className="min-h-screen flex items-center justify-center"
       style={{ backgroundColor: "#F8F8F8" }}
     >
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+      <div
+        className="rounded-2xl p-8 w-full max-w-md"
+        style={{
+          backgroundColor: "#FBFBFB",
+          boxShadow: "0px 2px 10px 0px rgba(19, 19, 19, 0.25)",
+        }}
+      >
         {/* Logo */}
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-start mb-8">
           <Logo />
         </div>
 
@@ -98,9 +104,9 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-lg font-semibold text-black transition-all disabled:opacity-50 cursor-pointer hover:opacity-90"
+            className="w-full py-3 rounded-lg font-semibold text-white transition-all disabled:opacity-50 cursor-pointer hover:opacity-90"
             style={{
-              backgroundColor: "#BCF4A8",
+              backgroundColor: "#1885C4",
               cursor: loading ? "not-allowed" : "pointer",
             }}
           >
@@ -112,7 +118,8 @@ export default function LoginPage() {
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"
-            className="font-semibold text-green-600 hover:text-green-700 cursor-pointer"
+            className="font-semibold cursor-pointer hover:opacity-80"
+            style={{ color: "#1885C4" }}
           >
             Sign up
           </Link>

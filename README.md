@@ -12,40 +12,45 @@ A modern air quality monitoring platform built with Next.js and Supabase. Monito
 - 📊 **Public Dashboard** - View air quality data across all rooms
 - 🔐 **User Authentication** - Secure signup/login with Supabase Auth
 - 🏠 **Room Management** - Create and manage monitoring rooms
-- 🌡️ **Real-time Monitoring** - Track temperature, humidity, and CO2 levels
+- 🌡️ **Real-time Monitoring** - Track temperature, humidity, and CO2 levels via WebSocket
 - 📈 **Air Quality Scoring** - Automatic calculation with color-coded alerts
 - 💡 **Smart Recommendations** - Actionable suggestions to improve air quality
-- 🔌 **Node-RED Integration** - Easy sensor data ingestion via HTTP API
+- 🔌 **Node-RED Integration** - Easy sensor data ingestion via HTTP API + WebSocket
+- 🔴 **Live Sensor Feed** - Real-time WebSocket streaming from Airsense devices
 - 🎨 **Modern UI** - Beautiful, responsive design with Tailwind CSS
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────┐
-│   Sensors   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐      HTTP POST       ┌──────────────┐
-│  Node-RED   │ ──────────────────► │  Next.js API │
-└─────────────┘                      └──────┬───────┘
-                                            │
-                                            ▼
-                                    ┌───────────────┐
-                                    │  Air Quality  │
-                                    │  Calculation  │
-                                    └───────┬───────┘
-                                            │
-                                            ▼
-                                    ┌───────────────┐
-                                    │   Supabase    │
-                                    │   Database    │
-                                    └───────┬───────┘
-                                            │
-                                            ▼
-                                    ┌───────────────┐
-                                    │  Real-time UI │
-                                    └───────────────┘
+┌─────────────────┐
+│ Airsense Device │
+│  (micro:bit)    │
+└────────┬────────┘
+         │
+         ▼
+┌────────────────┐      HTTP POST       ┌──────────────┐
+│   Node-RED     │ ──────────────────► │  Next.js API │
+└────────┬───────┘                      └──────┬───────┘
+         │                                     │
+         │ WebSocket                           ▼
+         │ (Real-time)               ┌───────────────┐
+         │                           │  Air Quality  │
+         │                           │  Calculation  │
+         │                           └───────┬───────┘
+         │                                   │
+         │                                   ▼
+         │                           ┌───────────────┐
+         │                           │   Supabase    │
+         │                           │   Database    │
+         │                           └───────┬───────┘
+         │                                   │
+         └───────────────────────────────────┼────────►
+                                             │
+                                             ▼
+                                     ┌───────────────┐
+                                     │  Dashboard UI │
+                                     │  (Live Feed)  │
+                                     └───────────────┘
 ```
 
 ## 🚀 Quick Start
@@ -96,6 +101,7 @@ Visit [http://localhost:3000](http://localhost:3000) to see your application.
 ## 📖 Documentation
 
 - **[Node-RED Integration Guide](docs/NODE_RED_INTEGRATION.md)** - Complete guide for integrating sensors
+- **[WebSocket Integration](docs/WEBSOCKET_INTEGRATION.md)** - Real-time sensor data streaming with WebSocket
 - **[API Reference](docs/API_REFERENCE.md)** - API endpoints documentation
 - **[Database Schema](docs/DATABASE_SCHEMA.md)** - Database structure and relationships
 
@@ -107,12 +113,14 @@ Visit [http://localhost:3000](http://localhost:3000) to see your application.
 2. **Sign Up** - Create an account to manage your own rooms
 3. **Create Rooms** - Add rooms and assign sensor IDs
 4. **Monitor** - Watch real-time air quality data on the dashboard
+5. **Live Feed** - See real-time WebSocket data from Airsense devices
 
 ### For Administrators
 
 1. **Configure Node-RED** - Set up sensor data flows (see [Node-RED Integration Guide](docs/NODE_RED_INTEGRATION.md))
-2. **Assign Sensors** - Link sensor IDs to rooms in the dashboard
-3. **Monitor Data** - Ensure sensors are sending data correctly
+2. **Set up WebSocket** - Configure real-time data streaming (see [WebSocket Integration](docs/WEBSOCKET_INTEGRATION.md))
+3. **Assign Sensors** - Link sensor IDs to rooms in the dashboard
+4. **Monitor Data** - Ensure sensors are sending data correctly
 
 ## 🔌 API Endpoints
 
@@ -215,7 +223,9 @@ airsense-platform/
 │   └── page.tsx            # Public homepage
 ├── lib/
 │   ├── supabase/           # Supabase client utilities
+│   ├── hooks/              # React hooks (WebSocket, etc.)
 │   ├── air-quality.ts      # Air quality calculation logic
+│   ├── sensor-utils.ts     # Sensor data processing utilities
 │   └── types.ts            # TypeScript type definitions
 ├── docs/                   # Documentation
 └── middleware.ts           # Auth middleware
@@ -268,6 +278,8 @@ Built with ❤️ for better indoor air quality monitoring
 - Check sensor_id matches the room configuration
 - Verify Node-RED is sending data to the correct endpoint
 - Check API logs for errors
+- For WebSocket: Ensure Node-RED WebSocket server is running at `ws://localhost:1880/ws/sensors`
+- Check browser console for WebSocket connection errors
 
 **Authentication issues:**
 

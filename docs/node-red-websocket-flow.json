@@ -1,0 +1,71 @@
+[
+  {
+    "id": "websocket_listener",
+    "type": "websocket-listener",
+    "path": "/ws/sensors",
+    "wholemsg": "true"
+  },
+  {
+    "id": "ws_in",
+    "type": "websocket in",
+    "name": "WebSocket In",
+    "server": "websocket_listener",
+    "client": "",
+    "x": 150,
+    "y": 100,
+    "wires": [["debug_ws_in"]]
+  },
+  {
+    "id": "debug_ws_in",
+    "type": "debug",
+    "name": "Client Connected",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 350,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "inject_sensor_data",
+    "type": "inject",
+    "name": "Simulate Airsense Data",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "2",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "{\"airsense/tempDHT\":-999,\"airsense/humidity\":45,\"airsense/tempDS\":20.5,\"airsense/co2\":350}",
+    "payloadType": "json",
+    "x": 180,
+    "y": 200,
+    "wires": [["ws_out"]]
+  },
+  {
+    "id": "ws_out",
+    "type": "websocket out",
+    "name": "ws_out_sensors",
+    "server": "websocket_listener",
+    "client": "",
+    "x": 430,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "comment_ws",
+    "type": "comment",
+    "name": "WebSocket Server for AirSense Platform",
+    "info": "This flow creates a WebSocket server at ws://localhost:1880/ws/sensors\n\n- The 'websocket in' node handles client connections\n- The 'websocket out' node broadcasts sensor data to all connected clients\n- The inject node simulates sensor data every 2 seconds\n\nReplace the inject node with your actual sensor input (MQTT, serial, etc.)",
+    "x": 200,
+    "y": 40,
+    "wires": []
+  }
+]

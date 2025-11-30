@@ -2,7 +2,7 @@
 
 :root {
   --background: #f8f8f8;
-  --foreground: #171717;
+  --foreground: #131313;
 }
 
 @theme inline {
@@ -15,7 +15,7 @@
 /* Force light mode for this app */
 body {
   background: #f8f8f8;
-  color: #171717;
+  color: #131313;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -26,5 +26,5 @@ h3,
 h4,
 h5,
 h6 {
-  color: #171717;
+  color: #131313;
 }

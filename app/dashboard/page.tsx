@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Building, Room, RoomWithLatestReading } from "@/lib/types";
 import { Logo } from "../components/Logo";
+import { LiveSensorCard } from "../components/LiveSensorCard";
+import { useNodeRedSensor } from "@/lib/hooks/useNodeRedSensor";
 
 export default function DashboardPage() {
   const [buildings, setBuildings] = useState<Building[]>([]);
@@ -30,6 +32,19 @@ export default function DashboardPage() {
   });
   const router = useRouter();
   const supabase = createClient();
+
+  // WebSocket connection for real-time sensor data
+  const {
+    data: sensorData,
+    isConnected: isSensorConnected,
+    error: sensorError,
+    reconnect: reconnectSensor,
+  } = useNodeRedSensor({
+    wsUrl: "ws://localhost:1880/ws/sensors",
+    autoConnect: true,
+    reconnectInterval: 2000,
+    maxReconnectAttempts: 5,
+  });
 
   useEffect(() => {
     checkUser();
@@ -330,7 +345,12 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F8F8F8" }}>
       {/* Header */}
-      <header className="bg-white border-b">
+      <header
+        style={{
+          backgroundColor: "#FBFBFB",
+          boxShadow: "0px 2px 10px 0px rgba(19, 19, 19, 0.25)",
+        }}
+      >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center">
             <Logo />
@@ -383,9 +403,30 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Live Sensor Data Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-black">
+            Live Sensor Feed
+          </h2>
+          <LiveSensorCard
+            data={sensorData}
+            isConnected={isSensorConnected}
+            error={sensorError}
+            roomName="Group Room 1"
+            roomCode="S307"
+            onReconnect={reconnectSensor}
+          />
+        </div>
+
         {/* Buildings & Rooms */}
         {buildings.length === 0 ? (
-          <div className="bg-white rounded-2xl p-12 text-center">
+          <div
+            className="rounded-2xl p-12 text-center"
+            style={{
+              backgroundColor: "#FBFBFB",
+              boxShadow: "0px 2px 10px 0px rgba(19, 19, 19, 0.25)",
+            }}
+          >
             <div className="text-6xl mb-4">🏢</div>
             <h3 className="text-xl font-bold mb-2 text-black">
               No buildings yet
@@ -408,7 +449,14 @@ export default function DashboardPage() {
                 (room) => room.building_id === building.id
               );
               return (
-                <div key={building.id} className="bg-white rounded-2xl p-6">
+                <div
+                  key={building.id}
+                  className="rounded-2xl p-6"
+                  style={{
+                    backgroundColor: "#FBFBFB",
+                    boxShadow: "0px 2px 10px 0px rgba(19, 19, 19, 0.25)",
+                  }}
+                >
                   {/* Building Header */}
                   <div className="flex items-start justify-between mb-6 pb-4 border-b">
                     <div>
@@ -567,7 +615,13 @@ export default function DashboardPage() {
           className="fixed inset-0 flex items-center justify-center z-50"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
         >
-          <div className="bg-white rounded-2xl p-8 w-full max-w-md">
+          <div
+            className="rounded-2xl p-8 w-full max-w-md"
+            style={{
+              backgroundColor: "#FBFBFB",
+              boxShadow: "0px 2px 10px 0px rgba(19, 19, 19, 0.25)",
+            }}
+          >
             <h2 className="text-2xl font-bold mb-6 text-black">
               {editingRoom ? "Edit Room" : "Create New Room"}
             </h2>
@@ -688,7 +742,13 @@ export default function DashboardPage() {
           className="fixed inset-0 flex items-center justify-center z-50"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
         >
-          <div className="bg-white rounded-2xl p-8 w-full max-w-md">
+          <div
+            className="rounded-2xl p-8 w-full max-w-md"
+            style={{
+              backgroundColor: "#FBFBFB",
+              boxShadow: "0px 2px 10px 0px rgba(19, 19, 19, 0.25)",
+            }}
+          >
             <h2 className="text-2xl font-bold mb-6 text-black">
               {editingBuilding ? "Edit Building" : "Create New Building"}
             </h2>
